@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Survey Entry</title>
+  <script>
+    function generateID(length = 6) {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let id = '';
+      for (let i = 0; i < length; i++) {
+        id += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return id;
+    }
+
+    const surveyURL = "https://www.surveycake.com/s/3dbO9";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyKIKQ1bl_xGLhx0NtMPXVsXb7WW-BpYJkhhQU2I28XFVWD4MYSbpq8uJuzCQGXa_36eA/exec";
+
+    window.onload = function () {
+      const surveyID = generateID();
+      const group = "Main Study";
+
+      document.getElementById("group").innerText = group;
+      document.getElementById("survey-id").innerText = surveyID;
+
+      fetch(scriptURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+          surveyID: surveyID,
+          group: group
+        })
+      })
+      .then(res => res.text())
+      .then(res => console.log("Server response:", res))
+      .catch(err => console.error("Logging error:", err));
+
+      const button = document.getElementById("start-button");
+      button.href = surveyURL;
+      button.onclick = function () {
+        alert("You will now begin the survey.\n\nPlease enter the following Survey ID in the first question:\n\n" + surveyID);
+      };
+    };
+  </script>
+</head>
+<body>
+  <h2>Welcome</h2>
+  <p>You are assigned to <strong><span id="group">...</span></strong>.</p>
+
+  <p>Your <strong>Survey ID</strong> is:</p>
+  <p style="font-size: 1.6em; color: darkgreen;"><strong><span id="survey-id">...</span></strong></p>
+
+  <p>Please write down this Survey ID. You will be asked to enter it at the beginning of the survey, and again when submitting your task.</p>
+
+  <a id="start-button" href="#" target="_blank">
+    <button style="padding: 10px 20px; font-size: 16px;">Begin Survey</button>
+  </a>
+</body>
+</html>
